@@ -42,8 +42,20 @@ function TableForm() {
       validationSchema={
         Yup.object().shape({
           columns: Yup.array().of(Yup.object().shape({
-            logical_name: Yup.string().required("入力必須です"),
-            physical_name: Yup.string().required("入力必須です"),
+            physical_name: Yup.string()
+              .required("入力必須です")
+              .max(64, "64文字以内で入力してください"),
+            logical_name: Yup.string()
+              .required("入力必須です")
+              .max(64, "64文字以内で入力してください"),
+            type: Yup.string()
+              .required("入力必須です")
+              .max(64, "64文字以内で入力してください"),
+          })),
+          indexes: Yup.array().of(Yup.object().shape({
+            name: Yup.string()
+              .required("入力必須です")
+              .max(64, "64文字以内で入力してください"),
           }))
         })
       }
@@ -58,14 +70,16 @@ function TableForm() {
                   <div>カラム定義</div>
                   <div>
                     <div className="btn-group" role="group">
-                      <button className="btn btn-sm btn-outline-secondary"
+                      <button type="button"
+                        className="btn btn-sm btn-outline-secondary"
                         disabled={selectedColIndex < 1}
                         onClick={(e) => {
                           e.preventDefault();
                           arrayHelper.swap(selectedColIndex - 1, selectedColIndex);
                           setSelectedColIndex(i => i - 1);
                         }}><FontAwesomeIcon icon={faArrowUp} /></button>
-                      <button className="btn btn-sm btn-outline-secondary"
+                      <button type="button"
+                        className="btn btn-sm btn-outline-secondary"
                         disabled={selectedColIndex < 0 || selectedColIndex === formikProps.values.columns.length - 1}
                         onClick={(e) => {
                           e.preventDefault();
@@ -73,7 +87,8 @@ function TableForm() {
                           setSelectedColIndex(i => i + 1);
                         }}><FontAwesomeIcon icon={faArrowDown} /></button>
                     </div>
-                    <button className="btn btn-sm btn-outline-secondary ml-2"
+                    <button type="button"
+                      className="btn btn-sm btn-outline-secondary ml-2"
                       onClick={(e) => {
                         e.preventDefault();
                         arrayHelper.push(defaultColumn);
@@ -81,15 +96,17 @@ function TableForm() {
                   </div>
                 </div>
                 {
-                  formikProps.values.columns.map((column, colIndex) => (<>
-                    <div key={colIndex}
-                      className={"card-body py-2 " + (selectedColIndex === colIndex ? "bg-light" : "")}
-                      onFocus={() => setSelectedColIndex(colIndex)} >
-                      <ColmunItem colIndex={colIndex} selected={colIndex === selectedColIndex} column={column}
-                        onDeleteColumn={i => { arrayHelper.remove(i); setSelectedColIndex(0) }} />
-                    </div>
-                    {colIndex < formikProps.values.columns.length - 1 && <hr className="my-0" />}
-                  </>))
+                  formikProps.values.columns.map((column, colIndex) => (
+                    <React.Fragment key={colIndex}>
+                      <div
+                        className={"card-body py-2 " + (selectedColIndex === colIndex ? "bg-light" : "")}
+                        onFocus={() => setSelectedColIndex(colIndex)} >
+                        <ColmunItem colIndex={colIndex} selected={colIndex === selectedColIndex} column={column}
+                          onDeleteColumn={i => { arrayHelper.remove(i); setSelectedColIndex(0) }} />
+                      </div>
+                      {colIndex < formikProps.values.columns.length - 1 && <hr className="my-0" />}
+                    </React.Fragment>
+                  ))
                 }
               </div>
             </>)}
@@ -99,24 +116,27 @@ function TableForm() {
               <div className="card">
                 <div className="card-header d-flex justify-content-between align-items-center">
                   <div>インデックス定義</div>
-                  <button className="btn btn-sm btn-outline-secondary"
+                  <button type="button"
+                    className="btn btn-sm btn-outline-secondary"
                     onClick={(e) => {
                       e.preventDefault();
                       arrayHelper.push({});
                     }}><FontAwesomeIcon icon={faPlus} /></button>
                 </div>
                 {
-                  formikProps.values.indexes.map((data, idxIndex) => (<>
-                    <div key={idxIndex} className="card-body py-2">
-                      <IndexItem idxIndex={idxIndex} onDeleteIndex={i => { arrayHelper.remove(i); }} />
-                    </div>
-                    {idxIndex < formikProps.values.indexes.length - 1 && <hr className="my-0" />}
-                  </>))
+                  formikProps.values.indexes.map((data, idxIndex) => (
+                    <React.Fragment key={idxIndex}>
+                      <div key={idxIndex} className="card-body py-2">
+                        <IndexItem idxIndex={idxIndex} onDeleteIndex={i => { arrayHelper.remove(i); }} />
+                      </div>
+                      {idxIndex < formikProps.values.indexes.length - 1 && <hr className="my-0" />}
+                    </React.Fragment>
+                  ))
                 }
               </div>
             </>)}
           </FieldArray>
-          <button type='submit' className="btn btn-primary my-3">保存</button>
+          <button type="button" className="btn btn-primary my-3">保存</button>
           <pre className="alert alert-primary">
             {JSON.stringify({ selectedColIndex, ...formikProps.values }, null, 2)}
           </pre>

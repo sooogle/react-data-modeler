@@ -2,7 +2,7 @@ import React from 'react'
 import { Field } from 'formik'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash } from '@fortawesome/free-solid-svg-icons'
-import CheckboxInput from './CheckboxInput'
+import Checkbox from './Checkbox'
 
 interface IndexItemProps {
   idxIndex: number
@@ -24,9 +24,9 @@ function IndexItem(props: IndexItemProps) {
       <div className="form-group col-lg-4">
         <div className="d-flex justify-content-between align-items-end h-100">
           <div className="ml-2 mb-1">
-            <CheckboxInput label="ユニーク" name={`indexes[${idxIndex}].is_unique`} />
+            <Checkbox label="ユニーク" name={`indexes[${idxIndex}].is_unique`} />
           </div>
-          <button className="btn btn-sm btn-danger" onClick={(e) => { e.preventDefault(); onDeleteIndex(idxIndex) }} >
+          <button type="button" className="btn btn-sm btn-danger" onClick={(e) => { e.preventDefault(); onDeleteIndex(idxIndex) }} >
             <FontAwesomeIcon icon={faTrash} className="mr-1" />削除
           </button>
         </div>

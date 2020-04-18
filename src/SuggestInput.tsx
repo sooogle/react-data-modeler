@@ -1,44 +1,42 @@
 import React, { useState } from 'react'
-import { useField } from 'formik'
 import Autosuggest from 'react-autosuggest'
+import { useField, FieldConfig } from 'formik'
 
 const options = [
-  'C',
-  'C#',
-  'C++',
-  'Clojure',
-  'Elm',
-  'Go',
-  'Haskell',
-  'Java',
-  'Javascript',
-  'Perl',
-  'PHP',
-  'Python',
-  'Ruby',
-  'Scala',
+  'id',
+  'product_code',
+  'product_name',
+  'price',
+  'weight',
+  'depth',
+  'width',
+  'height',
+  'supplier_id',
+  'supplier_name',
+  'tariff_code',
 ];
 
-function AutoSuggestInput(props) {
+interface SuggestInputProps extends FieldConfig {
+}
+
+function SuggestInput(props: SuggestInputProps) {
   const [field, meta, helper] = useField(props)
-  const [value, setValue] = useState(field.value)
-  const [suggestions, setSuggestions] = useState([])
+  const [suggestions, setSuggestions] = useState<string[]>([])
 
   // 入力された文字列をもとに、選択肢に出すデータを抽出する
-  const getSuggestions = (value) => {
-    const inputValue = value.trim().toLowerCase();
-    const inputLength = inputValue.length;
+  const getSuggestions = (value: string) => {
+    const inputValue = value.trim().toLowerCase()
+    const inputLength = inputValue.length
     return inputLength === 0 ? [] :
-      options.filter(opt => opt.toLowerCase().slice(0, inputLength) === inputValue);
-  };
+      options.filter(opt => opt.toLowerCase().slice(0, inputLength) === inputValue)
+  }
 
-  const onChange = (event, { newValue }) => {
-    helper.setValue(newValue);
-    setValue(newValue);
-  };
+  const onChange = (_e: React.FormEvent<any>, params: Autosuggest.ChangeEvent) => {
+    helper.setValue(params.newValue)
+    helper.setTouched(true)
+  }
 
-  const renderInputComponent = inputProps => {
-    console.log("auto suggestion render")
+  const renderInputComponent = (inputProps: any) => {
     const { className, ...other } = inputProps
     return (
       <>
@@ -57,9 +55,9 @@ function AutoSuggestInput(props) {
       getSuggestionValue={suggestion => suggestion}
       renderSuggestion={suggestion => <span>{suggestion}</span>}
       renderInputComponent={renderInputComponent}
-      inputProps={{ value, onChange }}
+      inputProps={{ value: field.value, onChange }}
     />
-  );
+  )
 }
 
-export default AutoSuggestInput;
+export default SuggestInput

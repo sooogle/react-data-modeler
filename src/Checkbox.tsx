@@ -1,13 +1,13 @@
 import React from 'react'
 import { useField } from 'formik'
 
-interface IProps {
+interface CheckboxProps {
   label: string
   name: string
   onChange?: (checked: boolean) => void
 }
 
-function CheckboxInput(props: IProps) {
+function Checkbox(props: CheckboxProps) {
   const { label, onChange, ...other } = props
   const [field] = useField({ ...other, type: 'checkbox'})
   return (
@@ -18,4 +18,4 @@ function CheckboxInput(props: IProps) {
   )
 }
 
-export default CheckboxInput
+export default Checkbox
