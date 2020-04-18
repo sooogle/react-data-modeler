@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import * as Yup from 'yup'
 import { Formik, Form, FieldArray } from 'formik'
-import ColmunItem from './ColmunItem'
+import ColmunItem from './ColumnItem'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUp, faArrowDown, faPlus } from '@fortawesome/free-solid-svg-icons'
 import IndexItem from './IndexItem'
@@ -25,7 +25,7 @@ export interface Index {
 function TableForm() {
   const defaultColumn: Column = {
     logical_name: '', physical_name: '', type: '', is_primary_key: false, is_nullable: false, default: '', description: ''
-  }
+  };
   const columns: Column[] = [
     { logical_name: 'ID', physical_name: 'id', type: 'BIGSERIAL', is_primary_key: true, is_nullable: false, default: '', description: '主キー' },
     { logical_name: '商品コード', physical_name: 'product_code', type: 'VARCHAR(32)', is_primary_key: false, is_nullable: false, default: '', description: '' },
@@ -35,7 +35,7 @@ function TableForm() {
   const indexes: Index[] = [
     { name: 'idx_products_on_name', columns: ["name"], is_unique: true },
   ];
-  const [selectedColIndex, setSelectedColIndex] = useState(0)
+  const [selectedColIndex, setSelectedColIndex] = useState(0);
   return (
     <Formik initialValues={{ columns, indexes }}
       onSubmit={(values) => alert(JSON.stringify(values, null, 2))}
@@ -146,4 +146,4 @@ function TableForm() {
   )
 }
 
-export default TableForm
+export default TableForm;

@@ -8,14 +8,14 @@ import Input from './Input'
 import SuggestInput from './SuggestInput'
 
 interface ColumnItemProps {
-  colIndex: number
-  selected: boolean
-  column: Column
-  onDeleteColumn: (index: number) => void
+  colIndex: number;
+  selected: boolean;
+  column: Column;
+  onDeleteColumn: (index: number) => void;
 }
 
 function ColumnItem(props: ColumnItemProps) {
-  const { colIndex, selected, onDeleteColumn } = props
+  const { colIndex, selected, onDeleteColumn } = props;
   return (<>
     <div className="form-row">
       <div className="form-group col-lg-3">
@@ -58,7 +58,7 @@ function ColumnItem(props: ColumnItemProps) {
         </div>
       </div>
     </>}
-  </>)
+  </>);
 }
 
-export default ColumnItem
+export default ColumnItem;
