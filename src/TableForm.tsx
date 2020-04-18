@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowUp, faArrowDown, faPlus } from '@fortawesome/free-solid-svg-icons'
 import IndexItem from './IndexItem'
 
-interface Column {
+export interface Column {
   logical_name: string,
   physical_name: string,
   type: string,
@@ -16,7 +16,7 @@ interface Column {
   description: string,
 }
 
-interface Index {
+export interface Index {
   name: string,
   columns: string[],
   is_unique: boolean,
@@ -35,7 +35,7 @@ function TableForm() {
   const indexes: Index[] = [
     { name: 'idx_products_on_name', columns: ["name"], is_unique: true },
   ];
-  const [selectedColIndex, setSelectedColIndex] = useState(-1)
+  const [selectedColIndex, setSelectedColIndex] = useState(0)
   return (
     <Formik initialValues={{ columns, indexes }}
       onSubmit={(values) => alert(JSON.stringify(values, null, 2))}
@@ -56,31 +56,37 @@ function TableForm() {
               <div className="card mb-3">
                 <div className="card-header d-flex justify-content-between align-items-center">
                   <div>カラム定義</div>
-                  <div className="btn-group" role="group">
-                    <button className="btn btn-sm btn-outline-secondary"
-                      disabled={selectedColIndex < 1}
+                  <div>
+                    <div className="btn-group" role="group">
+                      <button className="btn btn-sm btn-outline-secondary"
+                        disabled={selectedColIndex < 1}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          arrayHelper.swap(selectedColIndex - 1, selectedColIndex);
+                          setSelectedColIndex(i => i - 1);
+                        }}><FontAwesomeIcon icon={faArrowUp} /></button>
+                      <button className="btn btn-sm btn-outline-secondary"
+                        disabled={selectedColIndex < 0 || selectedColIndex === formikProps.values.columns.length - 1}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          arrayHelper.swap(selectedColIndex, selectedColIndex + 1)
+                          setSelectedColIndex(i => i + 1);
+                        }}><FontAwesomeIcon icon={faArrowDown} /></button>
+                    </div>
+                    <button className="btn btn-sm btn-outline-secondary ml-2"
                       onClick={(e) => {
                         e.preventDefault();
-                        arrayHelper.swap(selectedColIndex - 1, selectedColIndex);
-                        setSelectedColIndex(i => i - 1);
-                      }}><FontAwesomeIcon icon={faArrowUp} /></button>
-                    <button className="btn btn-sm btn-outline-secondary"
-                      disabled={selectedColIndex < 0 || selectedColIndex === formikProps.values.columns.length - 1}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        arrayHelper.swap(selectedColIndex, selectedColIndex + 1)
-                        setSelectedColIndex(i => i + 1);
-                      }}><FontAwesomeIcon icon={faArrowDown} /></button>
+                        arrayHelper.push(defaultColumn);
+                      }}><FontAwesomeIcon icon={faPlus} /></button>
                   </div>
                 </div>
                 {
-                  formikProps.values.columns.map((data, colIndex) => (<>
+                  formikProps.values.columns.map((column, colIndex) => (<>
                     <div key={colIndex}
-                      className={"card-body py-1 " + (selectedColIndex === colIndex ? "bg-light" : "")}
-                      onClick={() => setSelectedColIndex(colIndex)} >
-                      <ColmunItem index={colIndex} selected={colIndex === selectedColIndex}
-                        onAddColumn={i => { arrayHelper.insert(i + 1, defaultColumn); setSelectedColIndex(i + 1) }}
-                        onDeleteColumn={i => { arrayHelper.remove(i); setSelectedColIndex(-1) }} />
+                      className={"card-body py-2 " + (selectedColIndex === colIndex ? "bg-light" : "")}
+                      onFocus={() => setSelectedColIndex(colIndex)} >
+                      <ColmunItem colIndex={colIndex} selected={colIndex === selectedColIndex} column={column}
+                        onDeleteColumn={i => { arrayHelper.remove(i); setSelectedColIndex(0) }} />
                     </div>
                     {colIndex < formikProps.values.columns.length - 1 && <hr className="my-0" />}
                   </>))
@@ -91,20 +97,20 @@ function TableForm() {
           <FieldArray name="indexes">
             {(arrayHelper) => (<>
               <div className="card">
-              <div className="card-header d-flex justify-content-between align-items-center">
+                <div className="card-header d-flex justify-content-between align-items-center">
                   <div>インデックス定義</div>
-                    <button className="btn btn-sm btn-outline-secondary"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        arrayHelper.push({});
-                      }}><FontAwesomeIcon icon={faPlus} /></button>
+                  <button className="btn btn-sm btn-outline-secondary"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      arrayHelper.push({});
+                    }}><FontAwesomeIcon icon={faPlus} /></button>
                 </div>
                 {
-                  formikProps.values.indexes.map((data, colIndex) => (<>
-                    <div key={colIndex} className="card-body py-1">
-                      <IndexItem index={colIndex} onDeleteColumn={i => { arrayHelper.remove(i); setSelectedColIndex(-1) }} />
+                  formikProps.values.indexes.map((data, idxIndex) => (<>
+                    <div key={idxIndex} className="card-body py-2">
+                      <IndexItem idxIndex={idxIndex} onDeleteIndex={i => { arrayHelper.remove(i); }} />
                     </div>
-                    {colIndex < formikProps.values.indexes.length - 1 && <hr className="my-0" />}
+                    {idxIndex < formikProps.values.indexes.length - 1 && <hr className="my-0" />}
                   </>))
                 }
               </div>
